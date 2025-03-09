@@ -107,3 +107,69 @@
 
 <%@ include file="footer.jsp" %>
 
+<script>
+    // Modal Control
+    const editBtn = document.getElementById('editBtn');
+    const editModal = document.getElementById('editModal');
+    const cancelBtn = document.getElementById('cancelBtn');
+
+    editBtn.addEventListener('click', () => {
+        editModal.style.display = 'flex';
+    });
+
+    cancelBtn.addEventListener('click', () => {
+        editModal.style.display = 'none';
+        resetForm();
+    });
+
+    // Form Validation
+    const editForm = document.getElementById('editForm');
+    const nameInput = document.getElementById('name');
+    const emailInput = document.getElementById('email');
+    const phoneInput = document.getElementById('phone');
+    const addressInput = document.getElementById('address');
+    const nameError = document.getElementById('nameError');
+    const emailError = document.getElementById('emailError');
+    const phoneError = document.getElementById('phoneError');
+    const addressError = document.getElementById('addressError');
+
+    function validateForm() {
+        let isValid = true;
+
+        // Name validation
+        if (nameInput.value.length < 2) {
+            nameError.textContent = 'Name must be at least 2 characters.';
+            isValid = false;
+        } else {
+            nameError.textContent = '';
+        }
+
+        // Email validation
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(emailInput.value)) {
+            emailError.textContent = 'Please enter a valid email.';
+            isValid = false;
+        } else {
+            emailError.textContent = '';
+        }
+
+        // Phone validation
+        const phoneRegex = /^[0-9]{10}$/;
+        if (!phoneRegex.test(phoneInput.value)) {
+            phoneError.textContent = 'Phone must be 10 digits.';
+            isValid = false;
+        } else {
+            phoneError.textContent = '';
+        }
+
+        // Address validation
+        if (addressInput.value.trim().length < 5) {
+            addressError.textContent = 'Address must be at least 5 characters.';
+            isValid = false;
+        } else {
+            addressError.textContent = '';
+        }
+
+        return isValid;
+    }
+
