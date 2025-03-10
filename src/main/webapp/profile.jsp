@@ -173,3 +173,113 @@
         return isValid;
     }
 
+    [nameInput, emailInput, phoneInput, addressInput].forEach(input => {
+        input.addEventListener('input', validateForm);
+    });
+
+    editForm.addEventListener('submit', (e) => {
+        if (!validateForm()) {
+            e.preventDefault();
+            showToast('Please fix the errors before saving.', 'error');
+        }
+    });
+
+    // Handle Delete Button Click
+    document.querySelectorAll('.delete-btn').forEach(button => {
+        button.addEventListener('click', function(e) {
+            e.preventDefault();
+            const modal = document.getElementById('deleteModal');
+            const message = document.getElementById('deleteModalMessage');
+            const confirmBtn = document.querySelector('.delete-confirm-btn');
+
+            // Populate modal with item name and deletion URL
+            const itemName = this.dataset.itemName;
+            const deleteUrl = this.dataset.deleteUrl;
+            message.textContent = `Are you sure you want to delete ${itemName}? This action cannot be undone.`;
+            confirmBtn.dataset.deleteUrl = deleteUrl;
+
+            modal.style.display = 'flex';
+        });
+    });
+
+    // Handle Delete Confirm Button
+    document.querySelector('.delete-confirm-btn').addEventListener('click', function() {
+        const deleteUrl = this.dataset.deleteUrl;
+        if (deleteUrl) {
+            // Send POST request for delete action
+            fetch(deleteUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: 'action=delete'
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        showToast('Account deleted. Redirecting to login...', 'success');
+                        setTimeout(() => window.location.href = '${pageContext.request.contextPath}/login.jsp', 2000);
+                    } else {
+                        showToast(data.error || 'Failed to delete account.', 'error');
+                    }
+                    document.getElementById('deleteModal').style.display = 'none';
+                })
+                .catch(error => {
+                    showToast('Failed to delete account due to server error.', 'error');
+                    document.getElementById('deleteModal').style.display = 'none';
+                });
+        }
+    });
+
+    // Handle Delete Cancel Button
+    document.querySelector('.cancel-btn').addEventListener('click', function() {
+        document.getElementById('deleteModal').style.display = 'none';
+    });
+
+    // Toast Notification
+    function showToast(message, type) {
+        const toast = document.getElementById('toast');
+        toast.textContent = message;
+        toast.classList.remove('success', 'error');
+        toast.classList.add(type, 'show');
+        setTimeout(() => {
+            toast.classList.remove('show');
+        }, 3000);
+    }
+
+    function resetForm() {
+        nameInput.value = '${sessionScope.user.name}';
+        emailInput.value = '${sessionScope.user.email}';
+        phoneInput.value = '${sessionScope.user.phoneNumber}';
+        addressInput.value = '${sessionScope.user.address}';
+        nameError.textContent = '';
+        emailError.textContent = '';
+        phoneError.textContent = '';
+        addressError.textContent = '';
+    }
+
+    // Show Toast for Update/Delete
+    window.onload = function() {
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('updated') === 'true') {
+            showToast('Profile updated successfully!', 'success');
+        } else if (urlParams.get('updated') === 'false') {
+            showToast(urlParams.get('error') || 'Profile update failed.', 'error');
+        } else if (urlParams.get('deleted') === 'true') {
+            showToast('Account deleted. Redirecting to login...', 'success');
+            setTimeout(() => window.location.href = '${pageContext.request.contextPath}/login.jsp', 2000);
+        } else if (urlParams.get('deleted') === 'false') {
+            showToast(urlParams.get('error') || 'Account deletion failed.', 'error');
+        }
+    };
+
+    // Handle Delete Cancel Button - Fix
+    document.querySelectorAll('.cancel-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            const modal = this.closest('.modal');
+            modal.style.display = 'none';
+        });
+    });
+</script>
+</body>
+</html>
