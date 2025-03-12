@@ -164,3 +164,111 @@ body {
   margin-bottom: 5px;
   color: #333;
 }
+
+.modal-field input,
+.modal-field textarea {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 14px;
+}
+
+.modal-field textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.modal-field input:focus,
+.modal-field textarea:focus {
+  outline: none;
+  border-color: #ff6f61;
+  box-shadow: 0 0 5px rgba(255, 111, 97, 0.5);
+}
+
+.modal-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.modal-buttons button {
+  padding: 14px 28px;
+  border-radius: 50px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.cancel-btn {
+  background-color: rgba(255, 255, 255, 0.9);
+  color: #333;
+  border: 2px solid #fff;
+}
+
+.cancel-btn:hover {
+  background-color: rgba(255, 255, 255, 0.7);
+  transform: scale(1.05);
+}
+
+/* Toast Styling */
+.toast {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: linear-gradient(90deg, #ff6f61, #f4b400);
+  color: #fff;
+  padding: 10px 20px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-family: "DM Sans", sans-serif;
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+  z-index: 1000;
+}
+
+.toast.show {
+  opacity: 1;
+}
+
+.error {
+  color: #e65b50;
+  font-size: 12px;
+  display: block;
+  margin-top: 5px;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 10px;
+  }
+
+  .profile-header h2 {
+    font-size: 28px;
+  }
+
+  .profile-card {
+    padding: 15px;
+  }
+
+  .profile-buttons {
+    flex-direction: column;
+  }
+
+  .start-ordering {
+    width: 100%;
+  }
+}
