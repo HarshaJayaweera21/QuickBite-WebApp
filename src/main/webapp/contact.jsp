@@ -33,3 +33,68 @@
   </div>
 </section>
 
+<!-- Contact Form and Info Section -->
+<section class="contact-main fadeIn">
+  <div class="contact-container">
+    <!-- Contact Form -->
+    <div class="contact-form">
+      <form id="contactForm" action="${pageContext.request.contextPath}/contact" method="POST">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="name">Name</label>
+            <input type="text" id="name" name="name" placeholder="Your Name" required>
+          </div>
+          <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" placeholder="Your Email" required>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group full-width">
+            <label for="subject">Subject</label>
+            <input type="text" id="subject" name="subject" placeholder="Subject" required>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group full-width">
+            <label for="message">Message</label>
+            <textarea id="message" name="message" placeholder="Your Message" rows="5" required></textarea>
+          </div>
+        </div>
+        <button type="submit" class="submit-btn"><i class="fas fa-paper-plane"></i> Send</button>
+      </form>
+    </div>
+    <!-- Contact Info -->
+    <div class="contact-info">
+      <div class="info-card">
+        <i class="fas fa-phone-alt"></i>
+        <h3>Call Us</h3>
+        <p>+94 812 387 888</p>
+      </div>
+      <div class="info-card">
+        <i class="fas fa-clock"></i>
+        <h3>Hours</h3>
+        <p>Mon-Fri: 11am - 8pm<br>Sat, Sun: 9am - 10pm</p>
+      </div>
+      <div class="info-card">
+        <i class="fas fa-map-marker-alt"></i>
+        <h3>Our Location</h3>
+        <p>670/1/1A, Peradeniya Rd,<br>Kandy, Central 20000</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Instagram Section -->
+<section class="contact-instagram fadeIn">
+  <h2>Follow Us On Instagram</h2>
+  <div class="instagram-grid">
+    <img src="${pageContext.request.contextPath}/external/instagram-post-1.jpg" alt="Instagram Post 1">
+    <img src="${pageContext.request.contextPath}/external/instagram-post-2.jpg" alt="Instagram Post 2">
+    <img src="${pageContext.request.contextPath}/external/instagram-post-3.jpg" alt="Instagram Post 3">
+    <img src="${pageContext.request.contextPath}/external/instagram-post-4.jpg" alt="Instagram Post 4">
+  </div>
+</section>
+
+<%@ include file="footer.jsp" %>
+
