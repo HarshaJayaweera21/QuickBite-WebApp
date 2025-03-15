@@ -1,0 +1,77 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'DM Sans', sans-serif;
+}
+
+/* Contact-specific styles to match foods.jsp and about.jsp */
+.contact-hero {
+    background: transparent;
+    padding: 60px 20px;
+    text-align: center;
+}
+
+.hero-content {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.hero-content h1 {
+    font-size: 36px;
+    font-family: 'Patua One', sans-serif;
+    color: #000;
+    margin-bottom: 20px;
+}
+
+.hero-content p {
+    font-size: 16px;
+    font-family: 'DM Sans', sans-serif;
+    color: #666;
+    line-height: 24px;
+}
+
+.contact-main {
+    padding: 60px 20px;
+    background: transparent;
+}
+
+.contact-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    gap: 40px;
+    align-items: flex-start;
+}
+
+.contact-form {
+    flex: 2;
+    background: rgba(255, 255, 255, 0.9);
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    animation: fadeIn 1s ease-in 0.2s both;
+}
+
+.contact-form form {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.form-row {
+    display: flex;
+    gap: 24px;
+}
+
+.form-group {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.form-group.full-width {
+    flex: 2;
+}
+
