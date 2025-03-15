@@ -98,3 +98,50 @@
 
 <%@ include file="footer.jsp" %>
 
+<script>
+  // Smooth scrolling for anchor links
+  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function(e) {
+      e.preventDefault();
+      document.querySelector(this.getAttribute('href')).scrollIntoView({
+        behavior: 'smooth'
+      });
+    });
+  });
+
+  // Form validation and toast notification
+  document.getElementById('contactForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const name = document.getElementById('name').value;
+    const email = document.getElementById('email').value;
+    const subject = document.getElementById('subject').value;
+    const message = document.getElementById('message').value;
+    const toast = document.getElementById('toast');
+
+    if (name && email && subject && message) {
+      // Simulate form submission (replace with actual AJAX call)
+      toast.textContent = "Message sent successfully!";
+      toast.classList.add('show');
+      this.reset();
+    } else {
+      toast.textContent = "Please fill out all fields.";
+      toast.classList.add('show');
+    }
+
+    setTimeout(() => {
+      toast.classList.remove('show');
+    }, 2000);
+  });
+
+  // Pulse animation on info cards and submit button hover
+  document.querySelectorAll('.info-card, .submit-btn').forEach(element => {
+    element.addEventListener('mouseenter', function() {
+      this.classList.add('pulse');
+    });
+    element.addEventListener('animationend', function() {
+      this.classList.remove('pulse');
+    });
+  });
+</script>
+</body>
+</html>
