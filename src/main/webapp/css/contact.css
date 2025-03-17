@@ -161,3 +161,58 @@
     line-height: 22px;
 }
 
+.contact-instagram {
+    padding: 60px 20px;
+    background: transparent;
+    text-align: center;
+}
+
+.contact-instagram h2 {
+    font-size: 24px;
+    font-family: 'Patua One', sans-serif;
+    color: #000;
+    margin-bottom: 40px;
+}
+
+.instagram-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.instagram-grid img {
+    width: 100%;
+    height: auto;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s ease;
+}
+
+.instagram-grid img:hover {
+    transform: scale(1.05);
+}
+
+/* Responsive Design */
+@media (max-width: 767px) {
+    .contact-container {
+        flex-direction: column;
+    }
+
+    .contact-form {
+        padding: 20px;
+    }
+
+    .form-row {
+        flex-direction: column;
+    }
+
+    .form-group {
+        width: 100%;
+    }
+
+    .instagram-grid {
+        grid-template-columns: 1fr;
+    }
+}
