@@ -66,3 +66,45 @@
     color: #000;
 }
 
+.payment-options {
+    margin-bottom: 15px;
+}
+
+.custom-radio {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    color: #333;
+    cursor: pointer;
+}
+
+.custom-radio input {
+    display: none;
+}
+
+.custom-radio span {
+    margin-left: 8px;
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.custom-radio span::before {
+    content: '';
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border: 2px solid #ddd;
+    border-radius: 50%;
+    margin-right: 8px;
+    transition: background-color 0.3s;
+    position: relative;
+}
+
+.custom-radio input:checked + span::before {
+    background-color: transparent;
+    border-color: #ff6f61;
+}
+
