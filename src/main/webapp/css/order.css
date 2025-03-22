@@ -108,3 +108,39 @@
     border-color: #ff6f61;
 }
 
+.custom-radio input:checked + span::after {
+    content: '';
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    background-color: #ff6f61;
+    border-radius: 50%;
+    position: absolute;
+    left: 4px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.payment-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.payment-info p {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    color: #666;
+}
+
+.card-logos {
+    display: flex;
+    gap: 10px;
+}
+
+.card-logo {
+    width: 40px;
+    height: 24px;
+    object-fit: contain;
+}
+
