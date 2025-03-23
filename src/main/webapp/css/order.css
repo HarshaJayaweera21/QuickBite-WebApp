@@ -144,3 +144,32 @@
     object-fit: contain;
 }
 
+.place-order-btn {
+    width: 100%;
+    background: linear-gradient(90deg, #ff6f61, #f4b400);
+    color: #fff;
+    padding: 12px;
+    border: none;
+    border-radius: 12px;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 500;
+    font-size: 16px;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+    transition: all 0.3s ease;
+}
+
+.place-order-btn:hover {
+    background: linear-gradient(90deg, #e65b50, #d9a300);
+    transform: scale(1.05);
+}
+
+.error-message {
+    color: #ff6f61;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    margin-top: 10px;
+}
