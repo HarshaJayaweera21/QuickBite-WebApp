@@ -55,3 +55,70 @@
       return;
     }
 
+    loginForm.addEventListener('submit', function(event) {
+      event.preventDefault();
+      const button = this.querySelector('.order-now');
+      if (!button) {
+        console.error('Submit button not found');
+        return;
+      }
+
+      button.innerHTML = `<div class="spinner"></div> Logging in...`;
+      button.disabled = true;
+
+      const formData = new FormData(loginForm);
+      const params = new URLSearchParams(formData);
+
+      setTimeout(() => {
+        fetch('${pageContext.request.contextPath}/user', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+          },
+          body: params.toString()
+        })
+                .then(response => {
+                  console.log('Response Status:', response.status);
+                  if (!response.ok) {
+                    throw new Error('Network response was not ok: ' + response.statusText);
+                  }
+                  return response.json();
+                })
+                .then(data => {
+                  console.log('Response Data:', data);
+                  if (data.success) {
+                    toast.textContent = "Logged in successfully!";
+                    toast.classList.add('show');
+                    setTimeout(() => {
+                      toast.classList.remove('show');
+                      window.location.href = data.redirectUrl;
+                    }, 2000);
+                  } else {
+                    toast.textContent = data.error || "Login failed!";
+                    toast.classList.add('show');
+                    setTimeout(() => toast.classList.remove('show'), 2000);
+                  }
+                })
+                .catch(error => {
+                  console.error('Error during login:', error);
+                  toast.textContent = "Error during login: " + error.message;
+                  toast.classList.add('show');
+                  setTimeout(() => toast.classList.remove('show'), 2000);
+                })
+                .finally(() => {
+                  button.innerHTML = `Login <i class="fas fa-sign-in-alt"></i>`;
+                  button.disabled = false;
+                });
+      }, 100);
+    });
+
+    function showToast(message) {
+      if (!toast) return;
+      toast.textContent = message;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 2000);
+    }
+  });
+</script>
+</body>
+</html>
