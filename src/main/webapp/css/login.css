@@ -116,3 +116,24 @@ body {
     transition: all 0.3s ease;
 }
 
+.order-now:hover {
+    background: linear-gradient(90deg, #e65b50, #d9a300);
+    transform: scale(1.05);
+}
+
+.rating a {
+    font-size: 14px;
+    color: #ff6f61;
+    text-decoration: none;
+}
+
+.rating a:hover {
+    text-decoration: underline;
+}
+
+.price {
+    font-size: 14px;
+    color: #ff6f61;
+    margin-bottom: 15px;
+}
+
