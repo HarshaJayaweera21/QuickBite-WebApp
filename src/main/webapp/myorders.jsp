@@ -55,3 +55,68 @@
 
 <%@ include file="footer.jsp" %>
 
+<script>
+    // AJAX for Cancel Order
+    document.querySelectorAll('.cancel-order').forEach(button => {
+        button.addEventListener('click', function(e) {
+            e.preventDefault();
+            const orderId = this.getAttribute('data-order-id');
+            const toast = document.getElementById('toast');
+
+            fetch('${pageContext.request.contextPath}/order', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: 'action=cancel&orderId=' + encodeURIComponent(orderId)
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.text();
+                })
+                .then(data => {
+                    toast.textContent = "Order cancelled successfully!";
+                    toast.classList.add('show');
+                    // Reload immediately after showing toast
+                    setTimeout(() => {
+                        toast.classList.remove('show');
+                        location.reload();
+                    }, 2000); // 2-second delay to show toast
+                })
+                .catch(error => {
+                    toast.textContent = "Error cancelling order!";
+                    toast.classList.add('show');
+                    setTimeout(() => {
+                        toast.classList.remove('show');
+                    }, 2000);
+                });
+
+            // Add pulse and bounce animations
+            this.classList.remove('pulse');
+            this.classList.add('pulse');
+            const icon = this.querySelector('i');
+            if (icon) {
+                icon.classList.remove('bounce');
+                void icon.offsetWidth;
+                icon.classList.add('bounce');
+            }
+        });
+    });
+
+    // Show toast only for initial page load errors
+    window.onload = function() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const toast = document.getElementById('toast');
+        if (urlParams.get('error')) {
+            toast.textContent = urlParams.get('error');
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 2000);
+        }
+    };
+</script>
+</body>
+</html>
