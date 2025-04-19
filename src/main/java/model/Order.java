@@ -54,3 +54,38 @@ public class Order {
         return total;
     }
 
+    public void updateStatus(String newStatus) {
+        this.status = newStatus;
+    }
+
+    public void cancelOrder() {
+        this.status = "Cancelled";
+    }
+
+    // CSV serialization
+    public String toCSV() {
+        return String.format("%s,%s,%s,%.2f,%s,%s,%s",
+                orderId, userId, items.stream().map(FoodItem::getFoodId).reduce((a, b) -> a + ";" + b).orElse(""),
+                totalAmount, status, new java.text.SimpleDateFormat("yyyy-MM-dd").format(orderDate), deliveryAddress);
+    }
+
+    public static Order fromCSV(String csvLine) {
+        String[] data = csvLine.split(",");
+        List<FoodItem> items = new ArrayList<>();
+        // Split the item IDs (stored as semicolon-separated list in CSV)
+        String[] itemIds = data[2].split(";");
+        // Note: Reconstructing FoodItem list requires FoodItemService, which isn't accessible here.
+        // This should be handled by the caller (e.g., OrderService) after parsing.
+        Date orderDate;
+        try {
+            orderDate = new java.text.SimpleDateFormat("yyyy-MM-dd").parse(data[5]);
+        } catch (java.text.ParseException e) {
+            // Fallback to current date if parsing fails
+            orderDate = new Date();
+        }
+        return new Order(
+                data[0], data[1], items, Double.parseDouble(data[3]),
+                orderDate, data[6], data[4]
+        );
+    }
+}
