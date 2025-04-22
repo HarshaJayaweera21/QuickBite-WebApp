@@ -38,3 +38,36 @@ public class OrderQueueServlet extends HttpServlet {
         // Set pending orders (queue)
         request.setAttribute("orderQueue", orderQueueService.getOrderQueue());
 
+        // Set confirmed orders
+        List<Order> confirmedOrders = orderService.getConfirmedOrders();
+        request.setAttribute("confirmedOrders", confirmedOrders);
+
+        request.getRequestDispatcher("/WEB-INF/views/order/adminOrderQueue.jsp").forward(request, response);
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String action = request.getParameter("action");
+        if ("update".equals(action)) {
+            try {
+                if (orderQueueService.updateFrontOrder()) {
+                    response.sendRedirect(request.getContextPath() + "/queue?status=updated");
+                } else {
+                    response.sendRedirect(request.getContextPath() + "/queue?error=Cannot update non-pending front order");
+                }
+            } catch (IOException e) {
+                LOGGER.severe("Error updating order: " + e.getMessage());
+                response.sendRedirect(request.getContextPath() + "/queue?error=Failed to update order");
+            }
+        } else if ("delete".equals(action)) {
+            String orderId = request.getParameter("orderId");
+            try {
+                orderService.deleteOrder(orderId);
+                response.sendRedirect(request.getContextPath() + "/queue?status=deleted");
+            } catch (IOException e) {
+                LOGGER.severe("Error deleting order: " + e.getMessage());
+                response.sendRedirect(request.getContextPath() + "/queue?error=Failed to delete order");
+            }
+        }
+    }
+}
