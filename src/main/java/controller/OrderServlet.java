@@ -101,3 +101,57 @@ public class OrderServlet extends HttpServlet {
                 List<FoodItem> orderItems = new ArrayList<>();
                 double totalAmount = 0.0;
 
+                for (Cart.CartItem cartItem : cartItems) {
+                    FoodItem foodItem = foodItemService.getFoodItemById(cartItem.getFoodItem().getFoodId());
+                    if (foodItem != null && foodItem.isAvailable()) {
+                        orderItems.add(foodItem);
+                        totalAmount += foodItem.getPrice() * cartItem.getQuantity();
+                        foodItemService.incrementOrderCount(foodItem.getFoodId());
+                    } else {
+                        LOGGER.warning("Food item " + cartItem.getFoodItem().getFoodId() + " is unavailable or not found");
+                    }
+                }
+
+                if (orderItems.isEmpty()) {
+                    response.sendRedirect(request.getContextPath() + "/order.jsp?error=No available items to order");
+                    return;
+                }
+
+                String orderId = "ORDER" + UUID.randomUUID().toString().substring(0, 8);
+                Date orderDate = new Date();
+                String status = "Pending";
+
+                Order order = new Order(orderId, user.getUserID(), orderItems, totalAmount, orderDate, deliveryAddress, status);
+                orderService.placeOrder(order);
+                orderQueueService.addToQueue(order); // Add the order to the queue
+
+                cart.clearCart();
+                session.setAttribute("cart", cart);
+
+                response.sendRedirect(request.getContextPath() + "/order.jsp?orderPlaced=true");
+            } catch (IOException e) {
+                LOGGER.log(Level.SEVERE, "Error placing order: " + e.getMessage(), e);
+                response.sendRedirect(request.getContextPath() + "/order.jsp?error=Failed to place order");
+            }
+        } else if ("updateStatus".equals(action)) {
+            String orderId = request.getParameter("orderId");
+            String newStatus = request.getParameter("status");
+            try {
+                orderService.updateOrderStatus(orderId, newStatus);
+                response.sendRedirect(request.getContextPath() + "/myorders?statusUpdated=true");
+            } catch (IOException e) {
+                LOGGER.log(Level.SEVERE, "Error updating order status: " + e.getMessage(), e);
+                response.sendRedirect(request.getContextPath() + "/myorders?error=Failed to update status");
+            }
+        } else if ("cancel".equals(action)) {
+            String orderId = request.getParameter("orderId");
+            try {
+                orderService.cancelOrder(orderId);
+                response.getWriter().write("success");
+            } catch (IOException e) {
+                LOGGER.log(Level.SEVERE, "Error cancelling order: " + e.getMessage(), e);
+                response.getWriter().write("error");
+            }
+        }
+    }
+}
