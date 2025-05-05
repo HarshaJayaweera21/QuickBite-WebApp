@@ -58,3 +58,41 @@ public class UserServlet extends HttpServlet {
         }
     }
 
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        String servletPath = request.getServletPath();
+        String action = request.getParameter("action");
+        LOGGER.info("Received POST request to " + servletPath + " with action: " + action);
+
+        if ("login".equals(action)) {
+            response.setContentType("application/json");
+            response.setCharacterEncoding("UTF-8");
+            login(request, response);
+        } else if ("register".equals(action)) {
+            response.setContentType("application/json");
+            response.setCharacterEncoding("UTF-8");
+            LOGGER.info("Processing register action");
+            register(request, response);
+        } else if ("update".equals(action)) {
+            updateProfile(request, response);
+        } else if ("delete".equals(action)) {
+            response.setContentType("application/json");
+            response.setCharacterEncoding("UTF-8");
+            deleteAccount(request, response);
+        } else if ("/admin/users".equals(servletPath)) {
+            response.setContentType("application/json");
+            response.setCharacterEncoding("UTF-8");
+            if ("add".equals(action)) {
+                addUser(request, response);
+            } else if ("update".equals(action)) {
+                updateUser(request, response);
+            }
+        } else {
+            LOGGER.warning("Invalid action received: " + action);
+            response.setContentType("application/json");
+            response.setCharacterEncoding("UTF-8");
+            sendJsonResponse(response, false, "Invalid action");
+        }
+    }
+
