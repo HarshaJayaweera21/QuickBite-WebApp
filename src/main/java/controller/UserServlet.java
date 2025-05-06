@@ -96,3 +96,64 @@ public class UserServlet extends HttpServlet {
         }
     }
 
+    private void listUsers(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        try {
+            List<User> users = userService.getAllUsers();
+            request.setAttribute("users", users);
+            request.getRequestDispatcher("/WEB-INF/views/user/adminUserManagement.jsp").forward(request, response);
+        } catch (IOException e) {
+            LOGGER.log(Level.SEVERE, "Error listing users: " + e.getMessage(), e);
+            throw new ServletException("Unable to list users", e);
+        }
+    }
+
+    private void showEditForm(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        String userId = request.getParameter("id");
+        try {
+            User user = userService.getUserById(userId);
+            if (user == null) {
+                LOGGER.warning("User not found: " + userId);
+                request.setAttribute("error", "User not found");
+            } else {
+                request.setAttribute("user", user);
+            }
+            request.getRequestDispatcher("/WEB-INF/views/user/adminUserManagement.jsp").forward(request, response);
+        } catch (IOException e) {
+            LOGGER.log(Level.SEVERE, "Error retrieving user: " + e.getMessage(), e);
+            throw new ServletException("Error retrieving user", e);
+        }
+    }
+
+    private void addUser(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        try {
+            String userID = request.getParameter("userID");
+            String role = request.getParameter("role");
+            String name = request.getParameter("name");
+            String email = request.getParameter("email");
+            String password = request.getParameter("password");
+            String phoneNumber = request.getParameter("phoneNumber");
+            String address = request.getParameter("address");
+
+            User user;
+            if ("Customer".equals(role)) {
+                user = new Customer(userID, name, email, password, phoneNumber, address);
+            } else if ("Admin".equals(role)) {
+                user = new Admin(userID, name, email, password, phoneNumber, address);
+            } else {
+                throw new IllegalArgumentException("Invalid role specified.");
+            }
+
+            userService.registerUser(user);
+            sendJsonResponse(response, true, null);
+        } catch (IllegalArgumentException e) {
+            LOGGER.log(Level.WARNING, "Validation error adding user: " + e.getMessage(), e);
+            sendJsonResponse(response, false, e.getMessage());
+        } catch (IOException e) {
+            LOGGER.log(Level.SEVERE, "Failed to add user: " + e.getMessage(), e);
+            sendJsonResponse(response, false, "Failed to add user due to server error.");
+        }
+    }
+
