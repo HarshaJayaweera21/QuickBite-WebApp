@@ -157,3 +157,46 @@ public class UserServlet extends HttpServlet {
         }
     }
 
+    private void updateUser(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        try {
+            String userID = request.getParameter("userID");
+            String role = request.getParameter("role");
+            String name = request.getParameter("name");
+            String email = request.getParameter("email");
+            String password = request.getParameter("password");
+            String phoneNumber = request.getParameter("phoneNumber");
+            String address = request.getParameter("address");
+
+            User user;
+            if ("Customer".equals(role)) {
+                user = new Customer(userID, name, email, password, phoneNumber, address);
+            } else if ("Admin".equals(role)) {
+                user = new Admin(userID, name, email, password, phoneNumber, address);
+            } else {
+                throw new IllegalArgumentException("Invalid role specified.");
+            }
+
+            userService.updateUser(user);
+            sendJsonResponse(response, true, null);
+        } catch (IllegalArgumentException e) {
+            LOGGER.log(Level.WARNING, "Validation error updating user: " + e.getMessage(), e);
+            sendJsonResponse(response, false, e.getMessage());
+        } catch (IOException e) {
+            LOGGER.log(Level.SEVERE, "Failed to update user: " + e.getMessage(), e);
+            sendJsonResponse(response, false, "Failed to update user due to server error.");
+        }
+    }
+
+    private void deleteUser(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        String userId = request.getParameter("id");
+        try {
+            userService.deleteUser(userId);
+            sendJsonResponse(response, true, null);
+        } catch (IOException e) {
+            LOGGER.log(Level.SEVERE, "Failed to delete user: " + e.getMessage(), e);
+            sendJsonResponse(response, false, "Failed to delete user due to server error.");
+        }
+    }
+
