@@ -200,3 +200,62 @@ public class UserServlet extends HttpServlet {
         }
     }
 
+    private void login(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        String email = request.getParameter("email");
+        String password = request.getParameter("password");
+        try {
+            User user = userService.login(email, password);
+            if (user == null) {
+                sendJsonResponse(response, false, "Invalid email or password.");
+            } else {
+                HttpSession session = request.getSession();
+                session.setAttribute("user", user);
+                String redirectUrl = "Admin".equals(user.getRole()) ?
+                        request.getContextPath() + "/admin/users" :
+                        request.getContextPath() + "/food-items";
+                JSONObject jsonResponse = new JSONObject();
+                jsonResponse.put("success", true);
+                jsonResponse.put("redirectUrl", redirectUrl);
+                try (PrintWriter out = response.getWriter()) {
+                    out.println(jsonResponse.toString());
+                }
+            }
+        } catch (IOException e) {
+            LOGGER.log(Level.SEVERE, "Login error: " + e.getMessage(), e);
+            sendJsonResponse(response, false, "Login failed due to server error.");
+        }
+    }
+
+    private void register(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        try {
+            String userID = UUID.randomUUID().toString();
+            String name = request.getParameter("name");
+            String email = request.getParameter("email");
+            String password = request.getParameter("password");
+            String phoneNumber = request.getParameter("phoneNumber");
+            String address = request.getParameter("address");
+
+            LOGGER.info("Registering user with ID: " + userID + ", Email: " + email);
+
+            User user = new Customer(userID, name, email, password, phoneNumber, address);
+            userService.registerUser(user);
+            HttpSession session = request.getSession();
+            session.setAttribute("user", user);
+            String redirectUrl = request.getContextPath() + "/food-items";
+            JSONObject jsonResponse = new JSONObject();
+            jsonResponse.put("success", true);
+            jsonResponse.put("redirectUrl", redirectUrl);
+            try (PrintWriter out = response.getWriter()) {
+                out.println(jsonResponse.toString());
+            }
+        } catch (IllegalArgumentException e) {
+            LOGGER.log(Level.WARNING, "Registration error: " + e.getMessage(), e);
+            sendJsonResponse(response, false, e.getMessage());
+        } catch (IOException e) {
+            LOGGER.log(Level.SEVERE, "Registration error: " + e.getMessage(), e);
+            sendJsonResponse(response, false, "Registration failed due to server error: " + e.getMessage());
+        }
+    }
+
