@@ -259,3 +259,51 @@ public class UserServlet extends HttpServlet {
         }
     }
 
+    private void showProfile(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        HttpSession session = request.getSession();
+        User user = (User) session.getAttribute("user");
+        LOGGER.info("showProfile called, user: " + (user != null ? user.getName() : "null"));
+        if (user == null) {
+            LOGGER.warning("No user found in session, redirecting to login");
+            response.sendRedirect(request.getContextPath() + "/login.jsp");
+            return;
+        }
+        request.setAttribute("user", user);
+        try {
+            String forwardPath = "/profile.jsp";
+            LOGGER.info("Attempting to forward to " + forwardPath);
+            request.getRequestDispatcher(forwardPath).forward(request, response);
+            LOGGER.info("Successfully forwarded to " + forwardPath);
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "Failed to forward to profile.jsp: " + e.getMessage() + ", cause: " + (e.getCause() != null ? e.getCause().getMessage() : "none"), e);
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Unable to load profile page: " + e.getMessage());
+        }
+    }
+
+    private void updateProfile(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        HttpSession session = request.getSession();
+        User user = (User) session.getAttribute("user");
+        if (user == null) {
+            response.sendRedirect(request.getContextPath() + "/login.jsp");
+            return;
+        }
+
+        try {
+            String name = request.getParameter("name");
+            String email = request.getParameter("email");
+            String phone = request.getParameter("phone");
+            String address = request.getParameter("address");
+            String password = user.getPassword(); // Preserve existing password
+
+            user.updateProfile(name, email, password, phone, address);
+            userService.updateUser(user);
+            session.setAttribute("user", user);
+            response.sendRedirect(request.getContextPath() + "/user?action=profile&updated=true");
+        } catch (IOException e) {
+            LOGGER.log(Level.SEVERE, "Profile update error: " + e.getMessage(), e);
+            response.sendRedirect(request.getContextPath() + "/user?action=profile&updated=false&error=Failed to update profile due to server error.");
+        }
+    }
+
