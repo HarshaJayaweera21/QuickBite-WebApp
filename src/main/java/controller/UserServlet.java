@@ -307,3 +307,47 @@ public class UserServlet extends HttpServlet {
         }
     }
 
+    private void deleteAccount(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        HttpSession session = request.getSession();
+        User user = (User) session.getAttribute("user");
+        if (user == null) {
+            sendJsonResponse(response, false, "User not logged in.");
+            return;
+        }
+
+        try {
+            userService.deleteUser(user.getUserID());
+            session.invalidate();
+            sendJsonResponse(response, true, null);
+        } catch (IOException e) {
+            LOGGER.log(Level.SEVERE, "Account deletion error: " + e.getMessage(), e);
+            sendJsonResponse(response, false, "Failed to delete account due to server error.");
+        }
+    }
+
+    private void viewOrderHistory(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        HttpSession session = request.getSession();
+        User user = (User) session.getAttribute("user");
+        if (user == null) {
+            response.sendRedirect(request.getContextPath() + "/login.jsp");
+        } else {
+            request.getRequestDispatcher("/orderHistory.jsp").forward(request, response);
+        }
+    }
+
+    private void sendJsonResponse(HttpServletResponse response, boolean success, String errorMessage)
+            throws IOException {
+        JSONObject jsonResponse = new JSONObject();
+        jsonResponse.put("success", success);
+        if (errorMessage != null) {
+            jsonResponse.put("error", errorMessage);
+        }
+        try (PrintWriter out = response.getWriter()) {
+            out.println(jsonResponse.toString());
+        }
+    }
+}
