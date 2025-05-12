@@ -102,3 +102,21 @@
 //    }
 //}
 
+package model;
+
+public class CustomOrderQueue {
+    private Order[] orders;
+    private int front; // Index of the front element
+    private int rear; // Index where the next element will be added
+    private int size; // Current number of elements
+    private int capacity; // Total capacity of the queue
+    private static final int DEFAULT_CAPACITY = 100; // Fixed capacity
+
+    public CustomOrderQueue() {
+        this.capacity = DEFAULT_CAPACITY;
+        this.orders = new Order[capacity];
+        this.front = 0;
+        this.rear = 0;
+        this.size = 0;
+    }
+
