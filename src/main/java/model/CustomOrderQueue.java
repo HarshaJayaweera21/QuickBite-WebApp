@@ -120,3 +120,44 @@ public class CustomOrderQueue {
         this.size = 0;
     }
 
+    // Add an order to the queue
+    public boolean addOrder(Order order) {
+        if (order == null || size == capacity) { // Return false if queue is full
+            return false;
+        }
+        orders[rear] = order;
+        rear = (rear + 1) % capacity; // Circular queue
+        size++;
+        return true;
+    }
+
+    // Peek at the front order without removing it
+    public Order peekOrder() {
+        if (isEmpty()) {
+            return null;
+        }
+        return orders[front];
+    }
+
+    // Remove and return the front order
+    public Order removeOrder() {
+        if (isEmpty()) {
+            return null;
+        }
+        Order order = orders[front];
+        orders[front] = null; // Help garbage collection
+        front = (front + 1) % capacity; // Circular queue
+        size--;
+        return order;
+    }
+
+    // Check if the queue is empty
+    public boolean isEmpty() {
+        return size == 0;
+    }
+
+    // Get the current size of the queue
+    public int size() {
+        return size;
+    }
+}
