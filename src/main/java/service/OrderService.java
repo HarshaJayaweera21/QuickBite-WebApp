@@ -78,3 +78,29 @@ public class OrderService {
         return orders;
     }
 
+    private void saveAllOrders(List<Order> orders) throws IOException {
+        String realPath = servletContext.getRealPath(FILE_PATH);
+        if (realPath == null) {
+            LOGGER.severe("Unable to resolve real path for " + FILE_PATH);
+            throw new IOException("Unable to resolve real path for " + FILE_PATH);
+        }
+        LOGGER.info("Writing to orders.txt at: " + realPath);
+        File file = new File(realPath);
+
+        if (!file.getParentFile().exists()) {
+            file.getParentFile().mkdirs();
+            LOGGER.info("Created parent directories for " + realPath);
+        }
+
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
+            for (Order order : orders) { // Fixed: Changed 'allOrders' to 'orders'
+                writer.write(order.toCSV());
+                writer.newLine();
+            }
+            LOGGER.info("Successfully wrote " + orders.size() + " orders to orders.txt");
+        } catch (IOException e) {
+            LOGGER.log(Level.SEVERE, "Error writing to orders.txt", e);
+            throw e;
+        }
+    }
+
