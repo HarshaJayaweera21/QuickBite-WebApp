@@ -104,3 +104,49 @@ public class OrderService {
         }
     }
 
+    public void updateOrderStatus(String orderId, String newStatus) throws IOException {
+        List<Order> orders = getAllOrders();
+        boolean updated = false;
+        for (int i = 0; i < orders.size(); i++) {
+            if (orders.get(i).getOrderId().equals(orderId)) {
+                orders.get(i).setStatus(newStatus);
+                updated = true;
+                break;
+            }
+        }
+        if (!updated) {
+            LOGGER.warning("No order found with ID " + orderId + " for status update");
+            throw new IOException("Order with ID " + orderId + " not found");
+        }
+        saveAllOrders(orders);
+        LOGGER.info("Successfully updated status of order " + orderId + " to " + newStatus + " in orders.txt");
+    }
+
+    public void cancelOrder(String orderId) throws IOException {
+        updateOrderStatus(orderId, "Cancelled");
+    }
+
+    public Order getOrderById(String orderId) throws IOException {
+        return getAllOrders().stream()
+                .filter(order -> order.getOrderId().equals(orderId))
+                .findFirst()
+                .orElse(null);
+    }
+
+    public List<Order> getConfirmedOrders() throws IOException {
+        return getAllOrders().stream()
+                .filter(order -> "Confirmed".equals(order.getStatus()))
+                .toList();
+    }
+
+    public void deleteOrder(String orderId) throws IOException {
+        List<Order> orders = getAllOrders();
+        boolean deleted = orders.removeIf(order -> order.getOrderId().equals(orderId));
+        if (!deleted) {
+            LOGGER.warning("No order found with ID " + orderId + " for deletion");
+            throw new IOException("Order with ID " + orderId + " not found");
+        }
+        saveAllOrders(orders);
+        LOGGER.info("Successfully deleted order " + orderId + " from orders.txt");
+    }
+}
