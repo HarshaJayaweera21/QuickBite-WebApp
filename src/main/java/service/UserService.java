@@ -88,3 +88,43 @@ public class UserService {
         LOGGER.info("Successfully updated user " + updatedUser.getUserID());
     }
 
+    public void deleteUser(String userId) throws IOException {
+        List<User> users = getAllUsers();
+        users.removeIf(user -> user.getUserID().equals(userId));
+        saveAllUsers(users);
+        LOGGER.info("Successfully deleted user " + userId);
+    }
+
+    public User login(String email, String password) throws IOException {
+        return getAllUsers().stream()
+                .filter(user -> user.login(email, password))
+                .findFirst()
+                .orElse(null);
+    }
+
+    private void saveAllUsers(List<User> users) throws IOException {
+        String realPath = servletContext.getRealPath(FILE_PATH);
+        if (realPath == null) {
+            LOGGER.severe("Unable to resolve real path for " + FILE_PATH);
+            throw new IOException("Unable to resolve real path for " + FILE_PATH);
+        }
+        File file = new File(realPath);
+
+        if (!file.getParentFile().exists()) {
+            file.getParentFile().mkdirs();
+            LOGGER.info("Created parent directories for " + realPath);
+        }
+
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
+            for (User user : users) {
+                LOGGER.info("Writing user to file: " + user.toCSV());
+                writer.write(user.toCSV());
+                writer.newLine();
+            }
+            LOGGER.info("Successfully wrote " + users.size() + " users to users.txt at " + realPath);
+        } catch (IOException e) {
+            LOGGER.log(Level.SEVERE, "Error writing to users.txt: " + e.getMessage(), e);
+            throw e;
+        }
+    }
+}
