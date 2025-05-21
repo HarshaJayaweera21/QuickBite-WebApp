@@ -50,3 +50,41 @@ public class UserService {
         return users;
     }
 
+    public User getUserById(String userId) throws IOException {
+        return getAllUsers().stream()
+                .filter(user -> user.getUserID().equals(userId))
+                .findFirst()
+                .orElse(null);
+    }
+
+    public void registerUser(User user) throws IOException {
+        List<User> users = getAllUsers();
+        if (users.stream().anyMatch(existing -> existing.getUserID().equals(user.getUserID()))) {
+            throw new IllegalArgumentException("User ID " + user.getUserID() + " already exists.");
+        }
+        if (users.stream().anyMatch(existing -> existing.getEmail().equals(user.getEmail()))) {
+            throw new IllegalArgumentException("Email " + user.getEmail() + " is already in use.");
+        }
+        users.add(user);
+        LOGGER.info("Adding user to list: " + user.toCSV());
+        saveAllUsers(users);
+        LOGGER.info("Successfully registered user " + user.getUserID());
+    }
+
+    public void updateUser(User updatedUser) throws IOException {
+        List<User> users = getAllUsers();
+        boolean updated = false;
+        for (int i = 0; i < users.size(); i++) {
+            if (users.get(i).getUserID().equals(updatedUser.getUserID())) {
+                users.set(i, updatedUser);
+                updated = true;
+                break;
+            }
+        }
+        if (!updated) {
+            throw new IOException("User with ID " + updatedUser.getUserID() + " not found");
+        }
+        saveAllUsers(users);
+        LOGGER.info("Successfully updated user " + updatedUser.getUserID());
+    }
+
