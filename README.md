@@ -255,7 +255,7 @@ Online-Food-Delivery-Management-System/
 
 #### Food Menu
 *Browse all available food items with filtering and sorting options*
-![Food Menu](screenshots/menu.png)
+![Food Menu](screenshots/food.png)
 
 #### Shopping Cart
 *Review items before checkout*
@@ -271,17 +271,13 @@ Online-Food-Delivery-Management-System/
 
 ### Admin Interface
 
-#### Admin Dashboard
-*Manage food items and categories*
-![Admin Dashboard](screenshots/admin-dashboard.png)
-
 #### Order Queue
 *View and process pending orders using Circular Queue*
-![Order Queue](screenshots/order-queue.png)
+![Order Queue](screenshots/orderqueue.png)
 
 #### User Management
 *Manage customer accounts*
-![User Management](screenshots/user-management.png)
+![User Management](screenshots/manageusers.png)
 
 
 ## 🔑 Key Highlights
